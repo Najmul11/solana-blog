@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect, useState, useCallback } from "react";
 import { useWallet } from "../../hooks/useWallet";
 import { getPosts } from "../../anchor/getPosts";
 import Post from "../blogs/Post";
@@ -17,18 +17,34 @@ import "react-responsive-modal/styles.css";
 import toast from "react-hot-toast";
 
 const Posts = () => {
-  const [posts, setPosts] = useState<any>([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-
   const [formData, setFormData] = useState<any>("");
+  const [open, setOpen] = useState(false);
 
   const { wallet, publicKey } = useWallet();
   const anchorWallet = useAnchorWallet();
-
   const program = getProgram(anchorWallet as any);
 
-  const [open, setOpen] = useState(false);
+  // Use useCallback to memoize the fetchPosts function
+  const fetchPosts = useCallback(async () => {
+    try {
+      const posts = await getPosts(wallet);
+      const userPosts = posts.filter(
+        (post) => post.authority === publicKey?.toString()
+      );
+      setPosts(userPosts);
+    } catch (error) {
+      alert(JSON.stringify(error));
+    } finally {
+      setLoading(false);
+    }
+  }, [wallet, publicKey]);
+
+  useEffect(() => {
+    fetchPosts(); // Fetch posts on component mount
+  }, [fetchPosts]);
 
   const onOpenModal = (
     id: any,
@@ -36,21 +52,54 @@ const Posts = () => {
     content: string,
     image: string
   ) => {
-    setFormData({
-      title: title ?? "",
-      content: content ?? "",
-      image: image ?? "",
-      id: id,
-    });
+    setFormData({ title, content, image, id });
     setOpen(true);
+  };
+
+  const onCloseModal = () => {
+    setFormData("");
+    setOpen(false);
   };
 
   const handleChange = (key: string, value: string) => {
     setFormData({ ...formData, [key]: value });
   };
-  const onCloseModal = () => {
-    setFormData("");
-    setOpen(false);
+
+  const handleEdit = async (e: any) => {
+    e.preventDefault();
+    setEditing(true);
+
+    const [postAccount] = await PublicKey.findProgramAddress(
+      [
+        Buffer.from("post"),
+        anchorWallet!.publicKey!.toBuffer(),
+        Uint8Array.from([formData.id]),
+      ],
+      program.programId
+    );
+
+    try {
+      await program.rpc.updatePost(
+        formData.title,
+        formData.content,
+        formData.image,
+        {
+          accounts: {
+            authority: anchorWallet!.publicKey,
+            post: postAccount,
+            systemProgram: SystemProgram.programId,
+          },
+        }
+      );
+
+      toast.success("Blog edited successfully");
+      onCloseModal();
+      await fetchPosts(); // Refetch posts after editing
+    } catch (error) {
+      toast.error("Something went wrong 🥸");
+    } finally {
+      setEditing(false);
+    }
   };
 
   const handleDelete = async (postId: number) => {
@@ -69,7 +118,7 @@ const Posts = () => {
     );
 
     try {
-      const post = await program.rpc.deletePost({
+      await program.rpc.deletePost({
         accounts: {
           authority: anchorWallet!.publicKey,
           user: userAccount,
@@ -78,81 +127,15 @@ const Posts = () => {
         },
       });
 
-      if (post) {
-        toast.success("Blog deleted successfully");
-      }
+      toast.success("Blog deleted successfully");
+      await fetchPosts(); // Refetch posts after deletion
     } catch (error) {
-      toast.success("Something went wrong🥸");
+      toast.error("Something went wrong 🥸");
     }
   };
-
-  const handleEdit = async (e: any) => {
-    e.preventDefault();
-    setEditing(true);
-
-    const [postAccount] = await PublicKey.findProgramAddress(
-      [
-        Buffer.from("post"),
-        anchorWallet!.publicKey!.toBuffer(),
-        Uint8Array.from([formData.id]),
-      ],
-      program.programId
-    );
-
-    try {
-      // here is the problem
-      const post = await program.rpc.updatePost(
-        `${formData.title}`,
-        `${formData.content}`,
-        `${formData.image}`,
-        {
-          accounts: {
-            authority: anchorWallet!.publicKey,
-            post: postAccount,
-            systemProgram: SystemProgram.programId,
-          },
-        }
-      );
-
-      if (post) {
-        setFormData({
-          title: "",
-          content: "",
-          image: "",
-        });
-        toast.success("Blog edited successfully");
-
-        onCloseModal();
-      }
-    } catch (error) {
-      toast.success("Something went wrong🥸");
-    } finally {
-      setEditing(false);
-    }
-  };
-
-  useEffect(() => {
-    try {
-      const allPosts = async () => {
-        const posts = await getPosts(wallet);
-
-        const userPosts = posts.filter(
-          (post) => post.authority === publicKey?.toString()
-        );
-
-        setPosts(userPosts);
-      };
-
-      allPosts();
-    } catch (error) {
-      alert(JSON.stringify(error));
-    } finally {
-      setLoading(false);
-    }
-  }, [publicKey, wallet]);
 
   return (
-    <div className=" max-sm:max-w-sm mx-auto ">
+    <div className="max-sm:max-w-sm mx-auto">
       {loading ? (
         <div className="grid max-sm:max-w-sm mx-auto md:grid-cols-2 gap-8">
           <Skeleton />
@@ -161,7 +144,7 @@ const Posts = () => {
           <Skeleton />
         </div>
       ) : (
-        <div className="grid max-md:max-w-96 mx-auto md:grid-cols-1 lg:grid-cols-2  gap-8">
+        <div className="grid max-md:max-w-96 mx-auto md:grid-cols-1 lg:grid-cols-2 gap-8">
           {posts.length > 0 &&
             posts.map(({ image, title, id, content, publicKey }: any) => (
               <Post
@@ -196,55 +179,53 @@ const Posts = () => {
         </div>
       )}
 
-      {/* =========================edit post modal ----------------- */}
+      {/* Edit Post Modal */}
       {open && formData && (
         <Modal open={open} onClose={onCloseModal} center>
-          <div className="w-[400px] !rounded-md overflow-hidden">
+          <div className="w-[400px] rounded-md overflow-hidden">
             <form
               onSubmit={handleEdit}
-              className=" bg-white rounded-md p-5 flex flex-col gap-4"
+              className="bg-white rounded-md p-5 flex flex-col gap-4"
             >
-              {/* Title */}
               <div className="flex flex-col gap-1">
                 <label>Title</label>
                 <input
                   value={formData.title}
                   onChange={(e) => handleChange("title", e.target.value)}
                   type="text"
-                  className="p-2 w-full border rounded-md placeholder:text-sm bg-gray-100/30"
+                  className="p-2 w-full border rounded-md bg-gray-100/30"
                   placeholder="Blog title"
                 />
               </div>
-              {/* content */}
+
               <div className="flex flex-col gap-1">
                 <label>Content</label>
                 <textarea
                   value={formData.content}
                   onChange={(e) => handleChange("content", e.target.value)}
                   rows={4}
+                  className="p-2 w-full border rounded-md bg-gray-100/30"
                   placeholder="Blog content"
-                  className="p-2 w-full border rounded-md placeholder:text-sm bg-gray-100/30"
                 />
               </div>
 
-              {/* image */}
               <div className="flex flex-col gap-1">
                 <label>Thumbnail</label>
                 <input
                   value={formData.image}
                   onChange={(e) => handleChange("image", e.target.value)}
                   type="text"
-                  className="p-2 w-full border rounded-md placeholder:text-sm bg-gray-100/30"
-                  placeholder="Pease provide  url"
+                  className="p-2 w-full border rounded-md bg-gray-100/30"
+                  placeholder="Provide image URL"
                 />
               </div>
 
               <button
                 disabled={editing}
                 type="submit"
-                className={` mt-3  text-white font-semibold px-6 !py-3 rounded-md shadow-lg  bg-[#512DA8] duration-300 ${
+                className={`mt-3 text-white font-semibold px-6 py-3 rounded-md shadow-lg bg-[#512DA8] ${
                   editing
-                    ? "cursor-not-allowed  bg-gray-200 text-black"
+                    ? "cursor-not-allowed bg-gray-200 text-black"
                     : "hover:bg-black"
                 }`}
               >
