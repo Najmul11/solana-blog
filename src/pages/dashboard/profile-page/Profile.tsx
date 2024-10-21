@@ -37,7 +37,9 @@ const Profile = () => {
   return (
     <div className="flex   ">
       {loading ? (
-        <Skeleton />
+        <div className="w-full flex items-center justify-center">
+          <Skeleton />
+        </div>
       ) : (
         <>
           {user ? (
