@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import { useWallet } from "../../hooks/useWallet";
 import { getPosts } from "../../anchor/getPosts";
-import Post from "./Post";
+import Post from "../blogs/Post";
 
-const AllBlogs = () => {
-  const { wallet } = useWallet();
+const Posts = () => {
+  const { wallet, publicKey } = useWallet();
   const [posts, setPosts] = useState<any>([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,9 +13,13 @@ const AllBlogs = () => {
     try {
       const allPosts = async () => {
         const posts = await getPosts(wallet);
-        console.log(posts);
 
-        setPosts(posts);
+        const userPosts = posts.filter(
+          (post) => post.authority,
+          toString() === publicKey?.toString()
+        );
+
+        setPosts(userPosts);
       };
 
       allPosts();
@@ -24,10 +28,10 @@ const AllBlogs = () => {
     } finally {
       setLoading(false);
     }
-  }, [wallet]);
+  }, [publicKey, wallet]);
 
   return (
-    <div className="grid max-sm:max-w-sm mx-auto sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 my-20 ">
+    <div className="grid max-sm:max-w-sm mx-auto md:grid-cols-2  gap-8 ">
       {posts.length > 0 &&
         posts.map(({ image, title }: any) => (
           <Post image={image} title={title} />
@@ -36,4 +40,4 @@ const AllBlogs = () => {
   );
 };
 
-export default AllBlogs;
+export default Posts;

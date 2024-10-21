@@ -4,6 +4,7 @@ import RootLayout from "../layouts/RootLayout/RootLayout";
 import Home from "../pages/Home";
 import AllBlogs from "../pages/blogs/AllBlogs";
 import Dashboard from "../pages/dashboard/Dashboard";
+import Profile from "../pages/dashboard/profile-page/Profile";
 
 export const routes = createBrowserRouter([
   {
@@ -25,6 +26,20 @@ export const routes = createBrowserRouter([
           {
             path: "/dashboard",
             element: <Dashboard />,
+          },
+        ],
+      },
+      {
+        path: "dashboard/",
+        element: <RootLayout isDashboard={true} />,
+        children: [
+          {
+            path: "/dashboard/all-posts",
+            element: <Dashboard />,
+          },
+          {
+            path: "/dashboard/profile",
+            element: <Profile />,
           },
         ],
       },
