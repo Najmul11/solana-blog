@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useWallet } from "../../hooks/useWallet";
 import { getPosts } from "../../anchor/getPosts";
 import Post from "../blogs/Post";
+import Skeleton from "./Skeleton";
 
 const Posts = () => {
   const { wallet, publicKey } = useWallet();
@@ -15,10 +16,8 @@ const Posts = () => {
         const posts = await getPosts(wallet);
 
         const userPosts = posts.filter(
-          (post) => post.authority,
-          toString() === publicKey?.toString()
+          (post) => post.authority === publicKey?.toString()
         );
-
         setPosts(userPosts);
       };
 
@@ -32,10 +31,21 @@ const Posts = () => {
 
   return (
     <div className="grid max-sm:max-w-sm mx-auto md:grid-cols-2  gap-8 ">
-      {posts.length > 0 &&
-        posts.map(({ image, title }: any) => (
-          <Post image={image} title={title} />
-        ))}
+      {loading ? (
+        <>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </>
+      ) : (
+        <>
+          {posts.length > 0 &&
+            posts.map(({ image, title }: any) => (
+              <Post image={image} title={title} />
+            ))}
+        </>
+      )}
     </div>
   );
 };

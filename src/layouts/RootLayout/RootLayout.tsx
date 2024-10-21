@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Nav from "./Nav";
-import Sider from "../../pages/dashboard/Sider";
+import Sider from "./Sider";
 
 const RootLayout = ({ isDashboard = false }: { isDashboard?: boolean }) => {
   return (
