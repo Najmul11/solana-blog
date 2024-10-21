@@ -30,7 +30,7 @@ const btns = [
   {
     label: "Create Post",
     icon: <MdPostAdd className="mr-2 text-xl" />,
-    path: "/dashboard/create-posts",
+    path: "/dashboard/create-post",
   },
   {
     label: "Profile",

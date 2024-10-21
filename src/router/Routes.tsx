@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import AllBlogs from "../pages/blogs/AllBlogs";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Profile from "../pages/dashboard/profile-page/Profile";
+import CreatePost from "../pages/dashboard/create-post/CreatePost";
 
 export const routes = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const routes = createBrowserRouter([
           {
             path: "/dashboard/profile",
             element: <Profile />,
+          },
+          {
+            path: "/dashboard/create-post",
+            element: <CreatePost />,
           },
         ],
       },

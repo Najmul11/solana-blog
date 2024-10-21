@@ -5,7 +5,7 @@ import idl from "./idl.json";
 import { Wallet } from "@project-serum/anchor/dist/cjs/provider";
 
 const PROGRAM_ID = new PublicKey(
-  "E2ungBToM7t7pULRMJrxog4iyAN8hEGVn9qQQBAAMHfd"
+  "EL9aNbpEHv9cQJFLUBwyXLPaWCGjQNiCndSK8Xg5FKJZ"
 );
 const NETWORK = "https://api.devnet.solana.com";
 const connection = new Connection(NETWORK, "processed");
