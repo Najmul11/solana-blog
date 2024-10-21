@@ -20,3 +20,21 @@ export const getPosts = async (wallet: any) => {
     })
   );
 };
+export const getSinglePost = async (wallet: any, key: any) => {
+  const program = getProgram(wallet);
+
+  // Fetch all 'Post' accounts from the blockchain
+  try {
+    const post: any = await program.account.post.fetch(key);
+    return {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      image: post.image,
+      authority: post.authority.toString(),
+      creatorPubkey: post.creatorPubkey.toString(),
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};

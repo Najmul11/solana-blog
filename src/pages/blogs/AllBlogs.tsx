@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useWallet } from "../../hooks/useWallet";
 import { getPosts } from "../../anchor/getPosts";
 import Post from "./Post";
+import { publicKey } from "@project-serum/anchor/dist/cjs/utils";
 
 const AllBlogs = () => {
   const { wallet } = useWallet();
@@ -29,8 +30,8 @@ const AllBlogs = () => {
   return (
     <div className="grid max-sm:max-w-sm mx-auto sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 my-20 ">
       {posts.length > 0 &&
-        posts.map(({ image, title }: any) => (
-          <Post image={image} title={title} />
+        posts.map(({ image, title, publicKey }: any) => (
+          <Post image={image} title={title} publicKey={publicKey} />
         ))}
     </div>
   );

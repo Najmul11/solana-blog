@@ -146,8 +146,14 @@ const Posts = () => {
       ) : (
         <div className="grid max-md:max-w-96 mx-auto md:grid-cols-1 lg:grid-cols-2  gap-8">
           {posts.length > 0 &&
-            posts.map(({ image, title, id, content }: any) => (
-              <Post image={image} title={title} dashboard={true} key={id}>
+            posts.map(({ image, title, id, content, publicKey }: any) => (
+              <Post
+                image={image}
+                title={title}
+                dashboard={true}
+                key={id}
+                publicKey={publicKey}
+              >
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => onOpenModal(id, title, content, image)}

@@ -6,6 +6,7 @@ import AllBlogs from "../pages/blogs/AllBlogs";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Profile from "../pages/dashboard/profile-page/Profile";
 import CreatePost from "../pages/dashboard/create-post/CreatePost";
+import Details from "../pages/blogs/Details";
 
 export const routes = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ export const routes = createBrowserRouter([
           {
             path: "/blogs",
             element: <AllBlogs />,
+          },
+          {
+            path: "/blogs/:key",
+            element: <Details />,
           },
           {
             path: "/dashboard",
