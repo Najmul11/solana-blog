@@ -9,7 +9,7 @@ const Sider = () => {
         <NavLink
           to={path}
           key={i}
-          className="flex items-center text-start p-4 bg-white rounded-md hover:bg-[#512DA8] duration-300 hover:text-white"
+          className="flex items-center text-start px-4 py-3 bg-white rounded-md hover:bg-[#512DA8] duration-300 hover:text-white"
         >
           {icon}
           {label}

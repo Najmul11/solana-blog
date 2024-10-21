@@ -91,7 +91,7 @@ const CreatePost = () => {
         <div className="flex flex-col gap-1">
           <label>Content</label>
           <textarea
-            onChange={(e) => handleChange("coontent", e.target.value)}
+            onChange={(e) => handleChange("content", e.target.value)}
             rows={4}
             placeholder="Blog content"
             className="p-2 w-full border rounded-md placeholder:text-sm bg-gray-100/30"
