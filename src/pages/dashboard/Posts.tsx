@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useWallet } from "../../hooks/useWallet";
@@ -13,10 +14,12 @@ import { MdEditSquare } from "react-icons/md";
 
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import toast from "react-hot-toast";
 
 const Posts = () => {
   const [posts, setPosts] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
 
   const [formData, setFormData] = useState<any>("");
 
@@ -66,7 +69,7 @@ const Posts = () => {
     );
 
     try {
-      await program.rpc.deletePost({
+      const post = await program.rpc.deletePost({
         accounts: {
           authority: anchorWallet!.publicKey,
           user: userAccount,
@@ -74,13 +77,18 @@ const Posts = () => {
           systemProgram: SystemProgram.programId,
         },
       });
+
+      if (post) {
+        toast.success("Blog deleted successfully");
+      }
     } catch (error) {
-      console.log(error);
+      toast.success("Something went wrong🥸");
     }
   };
 
   const handleEdit = async (e: any) => {
     e.preventDefault();
+    setEditing(true);
 
     const [postAccount] = await PublicKey.findProgramAddress(
       [
@@ -107,10 +115,19 @@ const Posts = () => {
       );
 
       if (post) {
+        setFormData({
+          title: "",
+          content: "",
+          image: "",
+        });
+        toast.success("Blog edited successfully");
+
         onCloseModal();
       }
     } catch (error) {
-      console.log(error);
+      toast.success("Something went wrong🥸");
+    } finally {
+      setEditing(false);
     }
   };
 
@@ -137,7 +154,7 @@ const Posts = () => {
   return (
     <div className=" max-sm:max-w-sm mx-auto ">
       {loading ? (
-        <div className="grid max-sm:max-w-sm mx-auto md:grid-cols-2">
+        <div className="grid max-sm:max-w-sm mx-auto md:grid-cols-2 gap-8">
           <Skeleton />
           <Skeleton />
           <Skeleton />
@@ -223,8 +240,13 @@ const Posts = () => {
               </div>
 
               <button
+                disabled={editing}
                 type="submit"
-                className=" mt-3  text-white font-semibold px-6 !py-3 rounded-md shadow-lg hover:bg-black bg-[#512DA8] duration-300 "
+                className={` mt-3  text-white font-semibold px-6 !py-3 rounded-md shadow-lg  bg-[#512DA8] duration-300 ${
+                  editing
+                    ? "cursor-not-allowed  bg-gray-200 text-black"
+                    : "hover:bg-black"
+                }`}
               >
                 Submit
               </button>

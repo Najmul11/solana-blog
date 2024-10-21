@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { useState } from "react";
 import { getProgram } from "../../../anchor/getProgram";
+import toast from "react-hot-toast";
 
 const CreatePost = () => {
   const [formData, setFormData] = useState<any>("");
+  const [creating, setCreating] = useState(false);
 
   const wallet = useAnchorWallet();
 
@@ -16,6 +19,7 @@ const CreatePost = () => {
   };
 
   const handleSubmit = async (e: any) => {
+    setCreating(true);
     e.preventDefault();
 
     const [userAccount] = await PublicKey.findProgramAddress(
@@ -64,10 +68,19 @@ const CreatePost = () => {
       );
 
       if (post) {
+        setFormData({
+          title: "",
+          content: "",
+          image: "",
+        });
+
+        toast.success("Blog posted successfully");
         // show success message
       }
     } catch (error) {
-      console.log(error);
+      toast.success("Something went wrong🥸");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -81,6 +94,7 @@ const CreatePost = () => {
         <div className="flex flex-col gap-1">
           <label>Title</label>
           <input
+            value={formData.title}
             onChange={(e) => handleChange("title", e.target.value)}
             type="text"
             className="p-2 w-full border rounded-md placeholder:text-sm bg-gray-100/30"
@@ -91,6 +105,7 @@ const CreatePost = () => {
         <div className="flex flex-col gap-1">
           <label>Content</label>
           <textarea
+            value={formData.content}
             onChange={(e) => handleChange("content", e.target.value)}
             rows={4}
             placeholder="Blog content"
@@ -104,6 +119,7 @@ const CreatePost = () => {
           <input
             onChange={(e) => handleChange("image", e.target.value)}
             type="text"
+            value={formData.image}
             className="p-2 w-full border rounded-md placeholder:text-sm bg-gray-100/30"
             placeholder="Pease provide  url"
           />
@@ -111,7 +127,11 @@ const CreatePost = () => {
 
         <button
           type="submit"
-          className=" mt-3  text-white font-semibold px-6 !py-3 rounded-md shadow-lg hover:bg-black bg-[#512DA8] duration-300 "
+          className={` mt-3  text-white font-semibold px-6 !py-3 rounded-md shadow-lg  bg-[#512DA8] duration-300 ${
+            creating
+              ? "cursor-not-allowed  bg-gray-200 text-black"
+              : "hover:bg-black"
+          }`}
         >
           Submit
         </button>
