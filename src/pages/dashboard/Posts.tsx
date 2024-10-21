@@ -144,7 +144,7 @@ const Posts = () => {
           <Skeleton />
         </div>
       ) : (
-        <div className="grid max-sm:max-w-sm mx-auto md:grid-cols-2  gap-8">
+        <div className="grid max-md:max-w-96 mx-auto md:grid-cols-1 lg:grid-cols-2  gap-8">
           {posts.length > 0 &&
             posts.map(({ image, title, id, content }: any) => (
               <Post image={image} title={title} dashboard={true} key={id}>

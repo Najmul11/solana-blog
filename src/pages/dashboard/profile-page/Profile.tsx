@@ -41,7 +41,7 @@ const Profile = () => {
       ) : (
         <>
           {user ? (
-            <div className="bg-white w-1/2 max-w-sm  p-10 flex flex-col  justify-center items-center gap-3 rounded-md">
+            <div className="bg-white  mx-auto w-full lg:w-1/2 max-w-sm  p-10 flex flex-col  justify-center items-center gap-3 rounded-md">
               <div className="size-24 rounded-full border overflow-hidden  ">
                 <img src={user.avatar} alt="" className=" " />
               </div>

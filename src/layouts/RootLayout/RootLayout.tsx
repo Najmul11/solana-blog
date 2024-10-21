@@ -9,10 +9,10 @@ const RootLayout = ({ isDashboard = false }: { isDashboard?: boolean }) => {
       {!isDashboard ? (
         <Outlet />
       ) : (
-        <div className="my-20 grid grid-cols-3 gap-12 ">
+        <div className="my-20 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 ">
           <Sider />
 
-          <div className="col-span-2">
+          <div className="lg:col-span-2">
             <Outlet />
           </div>
         </div>

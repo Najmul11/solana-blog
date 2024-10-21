@@ -45,19 +45,19 @@ const Nav = () => {
 
   return (
     <div className=" py-2 backdrop-blur-sm bg-[#e0f7fa]/10 sticky top-3  flex justify-between items-center  rounded-md ">
-      <div>
+      <div className="hidden sm:block">
         <Link to={"/"} className="font-semibold tracking-widest text-3xl ">
           ARTICLE <span className="text-red-600">.</span>
         </Link>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-5 justify-between max-sm:w-full ">
         {wallet && (
           <Link
             to={"/dashboard/all-posts"}
             className="flex items-center text-black font-semibold px-6 !py-3 rounded shadow-lg bg-white duration-300"
           >
-            <MdDashboard className="mr-2 text-xl" />
+            <MdDashboard className=" text-xl" />
             Dashboard
           </Link>
         )}

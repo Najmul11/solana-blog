@@ -72,10 +72,10 @@ const CreatePost = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <form
         onSubmit={handleSubmit}
-        className="max-w-lg bg-white rounded-md p-5 flex flex-col gap-4"
+        className="max-w-lg bg-white rounded-md p-5 flex flex-col gap-4 mx-auto"
       >
         {/* Title */}
         <div className="flex flex-col gap-1">
