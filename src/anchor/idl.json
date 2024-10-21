@@ -1,0 +1,91 @@
+{
+  "version": "0.1.0",
+  "name": "blog",
+  "constants": [
+    { "name": "USER_SEED", "type": "bytes", "value": "[117, 115, 101, 114]" },
+    { "name": "POST_SEED", "type": "bytes", "value": "[112, 111, 115, 116]" }
+  ],
+  "instructions": [
+    {
+      "name": "createUser",
+      "accounts": [
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "user", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "name", "type": "string" },
+        { "name": "avatar", "type": "string" }
+      ]
+    },
+    {
+      "name": "createPost",
+      "accounts": [
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "user", "isMut": true, "isSigner": false },
+        { "name": "post", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "title", "type": "string" },
+        { "name": "content", "type": "string" },
+        { "name": "image", "type": "string" }
+      ]
+    },
+    {
+      "name": "updatePost",
+      "accounts": [
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "post", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "title", "type": "string" },
+        { "name": "content", "type": "string" },
+        { "name": "image", "type": "string" }
+      ]
+    },
+    {
+      "name": "deletePost",
+      "accounts": [
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "user", "isMut": true, "isSigner": false },
+        { "name": "post", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "User",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "name", "type": "string" },
+          { "name": "avatar", "type": "string" },
+          { "name": "lastPostId", "type": "u8" },
+          { "name": "totalPosts", "type": "u8" },
+          { "name": "authority", "type": "publicKey" }
+        ]
+      }
+    },
+    {
+      "name": "Post",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "id", "type": "u8" },
+          { "name": "title", "type": "string" },
+          { "name": "content", "type": "string" },
+          { "name": "image", "type": "string" },
+          { "name": "authority", "type": "publicKey" },
+          { "name": "creatorPubkey", "type": "publicKey" }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "E2ungBToM7t7pULRMJrxog4iyAN8hEGVn9qQQBAAMHfd"
+  }
+}
