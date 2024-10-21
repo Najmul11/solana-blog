@@ -14,7 +14,6 @@ const AllBlogs = () => {
     try {
       const allPosts = async () => {
         const posts = await getPosts(wallet);
-        console.log(posts);
 
         setPosts(posts);
       };

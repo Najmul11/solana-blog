@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type TProps = {
   image: string;
@@ -16,10 +16,11 @@ const Post = ({
   dashboard = false,
   children,
 }: TProps) => {
+  const navigate = useNavigate();
   return (
-    <Link
-      to={`/blogs/${publicKey}`}
-      className={`px-4 pt-4 pb-3 border border-gray-400/30 rounded-md bg-white !grid-rows-subgrid !row-span-3 grid gap-3`}
+    <div
+      onClick={() => navigate(`/blogs/${publicKey}`)}
+      className={`px-4 pt-4 cursor-pointer pb-3 border border-gray-400/30 rounded-md bg-white !grid-rows-subgrid !row-span-3 grid gap-3`}
     >
       <img
         src={image}
@@ -34,7 +35,7 @@ const Post = ({
         {/* if dashboard  */}
         {dashboard && <>{children}</>}
       </div>
-    </Link>
+    </div>
   );
 };
 

@@ -156,13 +156,19 @@ const Posts = () => {
               >
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => onOpenModal(id, title, content, image)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenModal(id, title, content, image);
+                    }}
                     className="font- mt-2 flex items-center"
                   >
                     <MdEditSquare className="h-5 w-5 text-[#512DA8] mr-1" />
                   </button>
                   <button
-                    onClick={() => handleDelete(id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(id);
+                    }}
                     className="font- mt-2 flex items-center text-red-500"
                   >
                     <RiDeleteBack2Fill className="h-5 w-5 text-red-500 mr-1" />
