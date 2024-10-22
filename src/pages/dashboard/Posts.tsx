@@ -3,14 +3,15 @@
 import { useEffect, useState, useCallback } from "react";
 import { useWallet } from "../../hooks/useWallet";
 import { getPosts } from "../../anchor/getPosts";
-import Post from "../blogs/Post";
-import Skeleton from "./Skeleton";
 import { getProgram } from "../../anchor/getProgram";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { MdEditSquare } from "react-icons/md";
+
+import Skeleton from "./Skeleton";
+import Post from "../blogs/Post";
 
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
@@ -65,6 +66,8 @@ const Posts = () => {
     setFormData({ ...formData, [key]: value });
   };
 
+  // ----------------edit post ------------------
+
   const handleEdit = async (e: any) => {
     e.preventDefault();
     setEditing(true);
@@ -102,6 +105,7 @@ const Posts = () => {
     }
   };
 
+  // ----------------delete post ------------------
   const handleDelete = async (postId: number) => {
     const [userAccount] = await PublicKey.findProgramAddress(
       [Buffer.from("user"), anchorWallet!.publicKey!.toBuffer()],
